@@ -1,8 +1,5 @@
 
 import React from "react";
-
-ASDas
-
 import { Container, Col, Row, Card, CardBody, Button } from "react-bootstrap";
 import { products } from "../product_data";
 import CartItems from "./CartItems";
