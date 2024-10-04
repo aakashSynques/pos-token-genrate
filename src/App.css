@@ -1,0 +1,140 @@
+/* styles.css */
+body {
+  margin: 0;
+  padding: 0;
+  font-family: Arial, sans-serif;
+
+  background-color: #f3f3f3 !important;
+}
+
+.cart-side {
+  /* box-shadow: 0 0 10px rgba(0, 0, 0, .2); */
+  height: 95vh;
+  position: relative;
+  padding: 2px 8px;
+  top: 0;
+  z-index: 999;
+  background: white;
+  padding: 6px 6px;
+}
+
+.bg-light-table {
+  background: #f7f7f7;
+  padding: 10px 10px;
+  position: absolute;
+  width: 100%;
+  /* left: 11px; */
+  left: 0;
+  bottom: 0;
+  border: 9px solid #ffffff;
+}
+
+.card-price {
+  color: green;
+  font-size: 22px;
+  font-weight: 500;
+}
+
+/* .card-style{
+  border: 1px solid #13131329;
+} */
+.card-style h5,
+.title-font {
+  font-size: 15px;
+  margin-bottom: 0;
+}
+
+.qty {
+  font-size: 19px;
+  font-weight: 700;
+}
+
+.in-qty {
+  border: 1px solid gray;
+}
+
+.cart-scroll {
+  height: 450px;
+  overflow: auto;
+}
+
+.item-card button:hover {
+  /* background: #f8f9fa;
+  box-shadow: 2px 0px 9px #b3b3b3;
+  border-radius: 4px;
+  cursor: pointer; */
+  box-shadow: 2px 0px 9px #b3b3b3;
+  background: #fffce1 !important;
+}
+
+.search input {
+  height: 45px;
+}
+
+.jiMOeR .wrapper {
+  border-radius: 5px !important;
+}
+
+.dYrfwz {
+  height: 50px;
+}
+
+.wrapper {
+  z-index: 99 !important;
+}
+
+.btn-light {
+  background: white !important;
+}
+
+.item-card button:focus {
+  outline: 0;
+  background: #fffce1 !important;
+  box-shadow: 2px 0px 9px #b3b3b3;
+}
+
+.ffXrxx .ellipsis {
+  font-size: 22px;
+}
+
+.search-results {
+  position: absolute;
+
+  width: 48.5%;
+  max-height: 200px;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  top: -1;
+}
+
+.search-item {
+  font-size: 20px;
+  font-weight: 500;
+}
+
+.focused {
+  font-weight: 800;
+}
+
+
+.search-item:hover {
+  background-color: #f0f0f0;
+}
+
+.cart-scroll1 {
+  height: 300px;
+  overflow: auto;
+}
+
+.inner-tabs ul {
+  border: none !important;
+}
+
+.inner-tabs ul button {
+  border: none !important;
+  background-color: #e7e7e7;
+  border-radius: 0!important;
+  color: black;
+}.inner-tabs .nav-tabs .nav-link.active {
+  background: #2196F3!important;}
