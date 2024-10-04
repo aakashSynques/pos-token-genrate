@@ -306,7 +306,7 @@ ${cartItem.map((item) => `
 
             }
         } catch (err) {
-            console.log(err, "135")
+         
             setLoading(false);
             if (err.response && err.response.data && err.response.data.message) {
                 setNetworkError(err.response.data.message);

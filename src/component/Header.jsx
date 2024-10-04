@@ -168,44 +168,45 @@ const Header = () => {
                     <Col sm={6}>
 
 
-                    {location.pathname !== '/reports' && (
-                                  <div className='mt-1' ref={searchContainerRef}>
-                                  <div className='border-0'>
-                                      <input
-                                          id="searchProduct"
-                                          type="text"
-                                          value={searchTerm}
-                                          onChange={handleSearchChange}
-                                          onKeyDown={handleKeyDown}
-                                          onFocus={handleInputFocus}
-                                          placeholder="Search Product (Shift + P)"
-                                          className="form-control"
-                                          ref={searchInputRef}
-                                      />
-                                      {filteredItems?.length > 0 && (
-                                          <div className="search-results border bg-white p-2">
-                                              {filteredItems?.map((item, index) => (
-                                                  <div
-                                                      key={item.id}
-                                                      onClick={() => handleMouseClick(item)} // Select the item on click
-                                                      onMouseEnter={() => handleMouseEnter(index)} // Highlight on mouse enter
-                                                      className={`search-item p-1 border-bottom ${index === focusedIndex ? 'focused' : ''}`}
-                                                      style={{
-                                                          cursor: 'pointer',
-                                                          backgroundColor: index === focusedIndex ? '#fffce1' : 'transparent'
-                                                      }}
-                                                  >
-                                                      {item.productCode} - {item.name}
-                                                  </div>
-                                              ))}
-                                          </div>
-                                      )}
-                                  </div>
-                              </div>
+                        {location.pathname !== '/reports' && (
+                            <div className='mt-1' ref={searchContainerRef}>
+                                <div className='border-0'>
+                                    <input
+                                        id="searchProduct"
+                                        type="text"
+                                        value={searchTerm}
+                                        onChange={handleSearchChange}
+                                        onKeyDown={handleKeyDown}
+                                        onFocus={handleInputFocus}
+                                        placeholder="Search Product (Shift + P)"
+                                        className="form-control"
+                                        autocomplete="off"
+                                        ref={searchInputRef}
+                                    />
+                                    {filteredItems?.length > 0 && (
+                                        <div className="search-results border bg-white p-2">
+                                            {filteredItems?.map((item, index) => (
+                                                <div
+                                                    key={item.id}
+                                                    onClick={() => handleMouseClick(item)} // Select the item on click
+                                                    onMouseEnter={() => handleMouseEnter(index)} // Highlight on mouse enter
+                                                    className={`search-item p-1 border-bottom ${index === focusedIndex ? 'focused' : ''}`}
+                                                    style={{
+                                                        cursor: 'pointer',
+                                                        backgroundColor: index === focusedIndex ? '#fffce1' : 'transparent'
+                                                    }}
+                                                >
+                                                    {item.productCode} - {item.name}
+                                                </div>
+                                            ))}
+                                        </div>
+                                    )}
+                                </div>
+                            </div>
                         )}
 
 
-                  
+
                     </Col>
                     <Col sm={4} className='mt-1 text-end'>
                         {location.pathname !== '/' && (

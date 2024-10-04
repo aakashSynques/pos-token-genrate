@@ -7,20 +7,65 @@ const addTocartSlice = createSlice({
     cartItems: [],
   },
   reducers: {
+
+
+    // setCartItems(state, action) {
+    //   const item = action.payload;
+    //   // const existingItemIndex = state.cartItems.findIndex(
+    //   //   (cartItem) => cartItem.productId === item.productId
+    //   // );
+
+    //   if (!state.cartItems || state.cartItems.length === 0) {
+    //     state.cartItems = [];
+    //   }
+    //   const existingItemIndex = state.cartItems.findIndex(
+    //     (cartItem) => cartItem.productId === item.productId
+    //   );
+      
+
+
+    //   if (existingItemIndex >= 0) {
+    //     // If item already exists, increase the quantity
+    //     state.cartItems[existingItemIndex].quantity += 1;
+    //   } else {
+    //     // If item does not exist, add to cart with quantity 1
+    //     state.cartItems.push({ ...item, quantity: 1 });
+    //   }
+    // },
+
+
     setCartItems(state, action) {
       const item = action.payload;
+    
+      // Check if cartItems is empty and initialize if necessary
+      if (!state.cartItems || state.cartItems.length === 0) {
+        state.cartItems = [];
+      }
+    
       const existingItemIndex = state.cartItems.findIndex(
         (cartItem) => cartItem.productId === item.productId
       );
-
+    
       if (existingItemIndex >= 0) {
-        // If item already exists, increase the quantity
-        state.cartItems[existingItemIndex].quantity += 1;
+        // If the item exists, increase the quantity and move it to the last index
+        const existingItem = state.cartItems[existingItemIndex];
+        existingItem.quantity += 1;
+    
+        // Remove the item from its current position
+        state.cartItems.splice(existingItemIndex, 1);
+    
+        // Add the item to the last index
+        state.cartItems.push(existingItem);
       } else {
-        // If item does not exist, add to cart with quantity 1
+        // If item does not exist, add it to the cart with quantity 1
         state.cartItems.push({ ...item, quantity: 1 });
       }
     },
+    
+
+
+    
+
     clearCart(state) {
       state.isAuth = false;
       state.cartItems = [];

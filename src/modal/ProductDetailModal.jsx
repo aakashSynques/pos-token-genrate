@@ -33,8 +33,7 @@ function ProductDetailModal({
   const [changePaymode, setChangePaymentMode] = useState("");
   const [changePaymodeError, setChangePaymentModeError] = useState("");
 
-  console.log(getProduct?.orderDateTime?.slice(0, 10), changePaymode, "14");
-
+ 
   const printAgainInvoices = () => {
     const invoiceContent = `
 <html lang="en">

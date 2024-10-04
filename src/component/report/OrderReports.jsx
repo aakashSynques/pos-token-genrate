@@ -14,7 +14,6 @@ function OrderReports(props) {
     const [productDetailOpen, setProductDetailOpen] = useState(false);
     const [orderDeleteOpen, setOrderDeleteOpen] = useState(false);
     const [loading, setLoading] = useState(false);
-    const [loadingMessage, setLoadingMessage] = useState("");
     const [networkError, setNetworkError] = useState("");
     const [successMessage, setSuccessMessage] = useState("");
     const [getOrderReport, setGetOrderReport] = useState([]);
@@ -33,8 +32,9 @@ function OrderReports(props) {
         }
     }, [refresh]);
     const getReportsByCash = getOrderReport?.filter((csh) => csh.payMode === "Cash");
-    // const getCashTotal = 
-    console.log('getReportsByCash', getReportsByCash)
+
+
+    console.log('getOrderReport', getOrderReport)
 
 
     const numberOfItemsByCash = getReportsByCash && getReportsByCash?.length > 0
@@ -123,7 +123,7 @@ function OrderReports(props) {
             setLoading(false);
             return false;
         }
-        console.log(fromDate, toDate, "81")
+
 
         try {
             const body = { fromDate, toDate };
@@ -273,7 +273,7 @@ function OrderReports(props) {
         totalAmount: cat.amount // Ensuring totalAmount is formatted to two decimal places
     }));
 
-    console.log(numberOfItemsCategory);
+
 
     const numberOfItemsCategoryQty = numberOfItemsCategory && numberOfItemsCategory?.length > 0
         ? numberOfItemsCategory?.reduce((total, item) => total + (parseInt(item.totalQuantity) || 0), 0)
@@ -339,7 +339,7 @@ function OrderReports(props) {
                     <PropagateLoader color="#36d7b7" loading={true} size={15} />
                 </div>
             ) : networkError ? (
-                <div style={{ display: "flex", marginLeft: "0.5px", justifyContent: "center", color: 'red' }}>
+                <div  className='text-center pt-5 mt-5 text-danger'>
                     <h5>{networkError}</h5>
                 </div>
             ) : (
@@ -558,6 +558,9 @@ function OrderReports(props) {
                                                     </tr>
                                                 </tbody>
                                             </table>
+
+
+
                                             {dateError && (
                                                 <div style={{ display: "flex", marginLeft: "0.5px", justifyContent: "center" }}>
                                                     <ExclamationTriangleIcon
@@ -582,6 +585,9 @@ function OrderReports(props) {
                                                     </p>
                                                 </div>
                                             )}
+
+
+                                            
                                         </Tab>
                                     </Tabs>
 
@@ -633,14 +639,19 @@ function OrderReports(props) {
                                                     <tr key={index}>
                                                         <td scope="row">{index + 1}.</td>
                                                         <td style={{ textAlign: "right" }}>{(groupedData[payMode].count)?.toLocaleString()}</td>
+                                                        
                                                         <td style={{ textAlign: "center" }}> {payMode}</td>
                                                         <td style={{ textAlign: "right" }}>{(groupedData[payMode].amount)?.toLocaleString()}</td>
                                                     </tr>
                                                 ))}
                                                 <tr>
-                                                    <td className='bg-light' colSpan={2} style={{ textAlign: "left" }}><strong>Total: {totalAmount?.toLocaleString()}</strong></td>
                                                     <td className='bg-light'></td>
-                                                    <td className='bg-light'><strong></strong></td>
+                                                    <td className='bg-light text-end' colSpan={1}><strong>Qty:   {
+                    Object.keys(groupedData)
+                        .reduce((total, payMode) => total + (groupedData[payMode].count || 0), 0)?.toLocaleString()
+                }</strong></td>
+                                                    <td className='bg-light text-end' colSpan={3} ><strong>Total: {totalAmount?.toLocaleString()}</strong></td>
+
                                                 </tr>
                                             </tbody>
                                         </table>

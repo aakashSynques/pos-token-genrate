@@ -8,7 +8,7 @@ import { setCartItems } from "../redux/features/addTocartSlice";
 
 const ProductCard = () => {
   const dispatch = useDispatch();
-  console.log(products, "10");
+
   return (
     <>
       {products?.map((cat, index) => (
@@ -26,7 +26,7 @@ const ProductCard = () => {
               };
 
               return (
-                <Col sm={3} lg={3} className="py-1 item-card">
+                <Col sm={6} lg={3} className="py-1 item-card">
                   {/* <Card>
                     <CardBody
                       style={{ padding: "10px" }}

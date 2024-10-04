@@ -105,6 +105,22 @@ function CartItems() {
     };
 
 
+// last add
+
+    // useEffect(() => {
+    //     if (cartItem?.length > 0) {
+    //       // Focus on the last item in the cart
+    //       const lastItemIndex = cartItem?.length - 1;
+    //       if (quantityRefs.current[lastItemIndex]) {
+    //         quantityRefs.current[lastItemIndex].focus();
+    //         // Optionally select the value for easy editing
+    //         quantityRefs.current[lastItemIndex].select();
+    //       }
+    //     }
+    //   }, [cartItem, quantityRefs]);
+      
+
+
     useEffect(() => {
         const handleKeyDown = (event) => {
 
@@ -171,24 +187,6 @@ function CartItems() {
 
                                                 <Col sm={3} className="p-0">
                                                     <div key={cart.productId} className="cart-item">
-                                                        {/* <input
-                                                            key={index}
-                                                            type="number"
-                                                            value={cart.quantity === 0 ? "" : cart.quantity}
-                                                            className="text-center form-control p-0 rounded-0"
-                                                            onChange={(e) => {
-                                                                const value = Math.min(Math.max(e.target.value), 100); // Limit between 1 and 100
-                                                                handleQuantityChange(cart, value, index);
-                                                            }}
-                                                            onKeyDown={(e) => { handleKeyPressTab(e, index); handleKeyPress(e, index); }}
-                                                            onBlur={() => handleBlur(cart, index)}
-                                                            onFocus={(e) => e.target.select()} // Select the input when focused
-                                                            ref={(el) => {
-                                                                quantityRefs.current[index] = el; // Store the reference of each input field
-                                                            }}
-                                                            max={100}
-                                                            min={1}
-                                                        /> */}
                                                         <input
                                                             key={index}
                                                             type="number"
@@ -200,15 +198,13 @@ function CartItems() {
                                                             }}
                                                             onKeyDown={(e) => { handleKeyPressTab(e, index); handleKeyPress(e, index); }}
                                                             onBlur={() => handleBlur(cart, index)}
+                                                            
                                                             onFocus={(e) => e.target.select()} // Select the input when focused
+
                                                             ref={(el) => {
                                                                 quantityRefs.current[index] = el; // Store the reference of each input field
                                                             }}
-
                                                         />
-
-
-
                                                     </div>
                                                 </Col>
 
