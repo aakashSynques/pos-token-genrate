@@ -8,6 +8,8 @@ import Modal from "react-bootstrap/Modal";
 import { fetch, paymodeDropdown } from "../service/utils";
 import { getYear, formatDateTimePrint } from '../service/date.utils';
 import { Col, Row } from "react-bootstrap";
+import { FaRegMoneyBillAlt } from "react-icons/fa";
+
 
 function ProductDetailModal({
   getProduct,
@@ -33,7 +35,7 @@ function ProductDetailModal({
   const [changePaymode, setChangePaymentMode] = useState("");
   const [changePaymodeError, setChangePaymentModeError] = useState("");
 
- 
+
   const printAgainInvoices = () => {
     const invoiceContent = `
 <html lang="en">
@@ -163,8 +165,6 @@ ${getProduct?.orderData
     
   </body>
 </html> `;
-
-
     // Create iframe and inject the content
     const iframe = document.createElement("iframe");
     document.body.appendChild(iframe);
@@ -176,6 +176,164 @@ ${getProduct?.orderData
     iframe.remove();
     setProductDetailOpen(false);
   };
+
+
+
+
+  // print bill 
+
+  const printBill = () => {
+    const invoiceContent = `
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+      body {
+        margin: 0;
+        padding: 0;
+        font-family: Arial, sans-serif;
+        width: 100%;
+      }
+
+      .invoice-container {
+        padding: 0 20px;
+        margin: 0 auto;
+        width: 100%;
+        max-width: 100%;
+        box-sizing: border-box;
+      }
+
+      .invoice-header,
+      .invoice-footer,
+      .invoice-body {
+        width: 100%;
+      }
+
+   table{
+          width: 100%;
+      }table th{
+          font-weight: normal;
+           text-align: left;
+      
+           
+      }
+
+      table th,
+      table td {
+        padding: 5px;
+      }
+
+      .text-right {
+        text-align: right;
+      }
+
+      .text-left {
+        text-align: left;
+      }
+
+      .center {
+        text-align: center;
+      }
+
+      .btn-print {
+        padding: 10px 20px;
+        background-color: #4CAF50;
+        color: white;
+        border: none;
+        cursor: pointer;
+        margin-top: 20px;
+      }
+
+      .divider {
+   border-bottom: 1px dotted #1d11119c;
+        margin-top: 5px;
+      }
+      
+      table, tbody, td {
+ 
+  border-collapse: collapse;
+}
+
+    </style>
+  </head>
+  <body> 
+ 
+    <div class="invoice-container ">
+      <div class="invoice-header center" style="margin-top: 30px; margin-bottom: 10px">
+    <h4 style="line-height:0">Bake N Shake</h4>
+        <div style="display: flex; justify-content: space-between; font-size: 16px;">
+          <div>
+            <strong>${formatDateTimePrint(getProduct?.orderDateTime)}<strong>
+          </div>
+          <div>
+            <strong>${getYear()}/${getProduct?.tokenNo}</strong>
+          </div>
+        </div>
+      </div>
+      <div class="divider"></div>
+      <div class="invoice-body">
+        <table>
+
+ <tbody style="border-bottom: 1px dotted #1d11119c;">
+    <th>Qty</th>
+    <th>Description</th>
+    <th class="text-right ">Rate</th>
+  </tbody>
+
+    
+           ${getProduct?.orderData?.map((item) => `
+            <tr>
+              <td class="" style="width:20%;  font-size:15px">
+           ${item.quantity}        
+              </td>
+              <td class="">${item.productName} </td>
+              <td class="text-right ">${(item.unitPrice * item.quantity)} <br>
+              </td>
+            </tr>
+               ` ).join("")}
+
+                            <tr style="border-top: 1px dotted #1d11119c;">
+              <td colspan="2">
+               ${getProduct?.orderItem?.toLocaleString()} item(s)
+              </td>
+            
+              <td class="text-right ">Total :  ${getProduct?.orderAmount?.toLocaleString("en-US")}
+              <br>
+              ${getProduct?.payMode}
+              </td>
+            </tr>
+     
+        </table>
+        <div class="divider"></div>
+
+
+      </div>
+
+      <div class="invoice-footer center">
+        <p style="font-weight: normal; font-size: 10px; margin-bottom: 0px; line-height: 10px; margin-top: 10px">Thank You , Visit Again - www.bakenshake.in</p>
+      </div>
+    </div>
+
+ 
+  </body>
+</html> `;
+    // Create iframe and inject the content
+    const iframe = document.createElement("iframe");
+    document.body.appendChild(iframe);
+    iframe.contentWindow.document.open();
+    iframe.contentWindow.document.write(invoiceContent);
+    iframe.contentWindow.document.close();
+    iframe.contentWindow.focus();
+    iframe.contentWindow.print();
+    iframe.remove();
+    setProductDetailOpen(false);
+  };
+
+
+
+
+
 
   const handlePayModeChange = (e) => {
     const selectedValue = e.target.value;
@@ -411,17 +569,22 @@ ${getProduct?.orderData
 
             </Col>
 
-            <Col sm={4} className="text-end">
+            <Col sm={2} className="text-end">
+              <Button className="btn btn-info w-100 text-white" onClick={() => printBill()}>Bill <FaRegMoneyBillAlt />
+              </Button>
+            </Col>
 
+            <Col sm={2} className="text-end">
               <Button
                 type="button"
+                className="w-100"
                 variant="success"
                 onClick={() => printAgainInvoices()}
               >
-                <strong>
-                  {" "}
-                  Print <PrinterIcon style={{ width: "16px", height: "16px" }} />
-                </strong>
+
+                {" "}
+                Print <PrinterIcon style={{ width: "16px", height: "16px" }} />
+
               </Button>
             </Col>
 

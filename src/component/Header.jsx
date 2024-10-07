@@ -135,28 +135,43 @@ const Header = () => {
 
 
     useEffect(() => {
+        const handleClickOutside = (event) => {
+            if (searchInputRef.current && !searchInputRef.current.contains(event.target)) {
+                clearInterval(intervalId); // Clear the interval when clicking outside
+            }
+        };
         const intervalId = setInterval(() => {
             if (cartItem?.length === 0 && searchInputRef.current) {
                 searchInputRef.current.focus();
             }
         }, 1000);
-        // Stop the interval when cartItem length is 1
+        document.addEventListener("mousedown", handleClickOutside);
         if (cartItem?.length >= 1) {
             clearInterval(intervalId);
             setTimeout(() => {
             }, 0); // Adjust timeout as necessary
         }
+        return () => {
+            clearInterval(intervalId);
+            document.removeEventListener("mousedown", handleClickOutside);
+        };
+    }, [cartItem]);
 
-        return () => clearInterval(intervalId);
-    }, [cartItem]); // Dependency array includes cartItem
 
 
+    // useEffect(() => {
+    //     if (cartItem.length === 0) {
+    //       setTimeout(() => {
+    //         searchInputRef.current?.focus();
+    //       }, 100); // Add a small delay to ensure focus works properly
+    //     }
+    //   }, [cartItem]);
 
-    useEffect(() => {
-        if (searchInputRef.current) {
-            searchInputRef.current.focus();
-        }
-    }, []);
+    // useEffect(() => {
+    //     if (searchInputRef.current) {
+    //         searchInputRef.current.focus();
+    //     }
+    // }, []);
 
     return (
         <header className='border-bottom pt-'>
@@ -180,8 +195,8 @@ const Header = () => {
                                         onFocus={handleInputFocus}
                                         placeholder="Search Product (Shift + P)"
                                         className="form-control"
-                                        autocomplete="off"
-                                        ref={searchInputRef}
+                                        autoComplete="off"
+                                        ref={searchInputRef} // Reference to the input
                                     />
                                     {filteredItems?.length > 0 && (
                                         <div className="search-results border bg-white p-2">
@@ -204,15 +219,12 @@ const Header = () => {
                                 </div>
                             </div>
                         )}
-
-
-
                     </Col>
                     <Col sm={4} className='mt-1 text-end'>
                         {location.pathname !== '/' && (
-                            <a href="/">
+                            <Link to="/">
                                 <button className='btn bg-dark text-white btn-sm'>Back To POS</button>
-                            </a>
+                            </Link>
                         )} &nbsp;
                         {location.pathname !== '/reports' && (
                             <Link to="/reports">

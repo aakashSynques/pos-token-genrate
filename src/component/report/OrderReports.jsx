@@ -8,7 +8,6 @@ import Tab from 'react-bootstrap/Tab';
 import Tabs from 'react-bootstrap/Tabs';
 import * as XLSX from 'xlsx';
 import DeleteOrderModal from '../../modal/DeleteOrderModal';
-
 function OrderReports(props) {
     const [key, setKey] = useState('Bill');
     const [productDetailOpen, setProductDetailOpen] = useState(false);
@@ -20,82 +19,77 @@ function OrderReports(props) {
     const [getProduct, setGetProduct] = useState('');
     const [fromDate, setFromDate] = useState('');
     const [dateError, setDateError] = useState('');
-
     const [toDate, setToDate] = useState('');
     const [toError, setToError] = useState('');
-
     const [refresh, setRefresh] = useState(false);
-
     useEffect(() => {
         if (refresh === true) {
             window.location.reload();
         }
     }, [refresh]);
     const getReportsByCash = getOrderReport?.filter((csh) => csh.payMode === "Cash");
-
-
-    console.log('getOrderReport', getOrderReport)
-
-
     const numberOfItemsByCash = getReportsByCash && getReportsByCash?.length > 0
         ? getReportsByCash?.reduce((total, item) => total + (parseInt(item.orderItem) || 0), 0)
         : 0;
-
-
     const getTotalCash = getReportsByCash && getReportsByCash?.length > 0
         ? getReportsByCash?.reduce((total, item) => total + (parseInt(item.orderAmount) || 0), 0)
         : 0;
-
-
-
-
-
     const getReportsByUpi = getOrderReport?.filter((csh) => csh.payMode === "UPI");
-
-
     const numberOfItemsByUPI = getReportsByUpi && getReportsByUpi?.length > 0
         ? getReportsByUpi?.reduce((total, item) => total + (parseInt(item.orderItem) || 0), 0)
         : 0;
-
-
     const getTotalUPI = getReportsByUpi && getReportsByUpi?.length > 0
         ? getReportsByUpi?.reduce((total, item) => total + (parseInt(item.orderAmount) || 0), 0)
         : 0;
 
 
-
-    // Set the default date to today's date in 'YYYY-MM-DD' format
     // useEffect(() => {
     //     const today = new Date();
-    //     const formattedDate = today.toISOString().split('T')[0]; // Format the date to 'YYYY-MM-DD'
-    //     setFromDate(formattedDate);
-    //     setToDate(formattedDate);
+    //     const formatDateTime = (date, setMidnight = false) => {
+    //         const yyyy = date.getFullYear();
+    //         const mm = String(date.getMonth() + 1).padStart(2, '0'); // Add leading 0 if needed
+    //         const dd = String(date.getDate()).padStart(2, '0'); // Add leading 0 if needed
+    //         const hh = setMidnight ? '00' : String(date.getHours()).padStart(2, '0'); // Default is current hours
+    //         const min = setMidnight ? '00' : String(date.getMinutes()).padStart(2, '0'); // Default is current minutes
+    //         return `${yyyy}-${mm}-${dd} ${hh}:${min}`; // Returns format 'YYYY-MM-DD HH:mm'
+    //     };
 
+    //     const formattedFromDate = formatDateTime(today, true);
+    //     const nextDay = new Date(today);
+    //     nextDay.setDate(today.getDate()); // Move to the next day
+    //     nextDay.setHours(23, 59); // Set the time to 23:59 (11:59 PM)
+    //     const formattedToDate = formatDateTime(nextDay);
+    //     setFromDate(formattedFromDate);
+    //     setToDate(formattedToDate);
     // }, []);
-    useEffect(() => {
-        const today = new Date();
 
-        const formatDateTime = (date, setMidnight = false) => {
+
+    useEffect(() => {
+        const today = new Date();    
+        const formatDateTime = (date) => {
             const yyyy = date.getFullYear();
             const mm = String(date.getMonth() + 1).padStart(2, '0'); // Add leading 0 if needed
             const dd = String(date.getDate()).padStart(2, '0'); // Add leading 0 if needed
-
-            const hh = setMidnight ? '00' : String(date.getHours()).padStart(2, '0'); // Default is current hours
-            const min = setMidnight ? '00' : String(date.getMinutes()).padStart(2, '0'); // Default is current minutes
-
+            const hh = String(date.getHours()).padStart(2, '0'); // Add leading 0 if needed
+            const min = String(date.getMinutes()).padStart(2, '0'); // Add leading 0 if needed
             return `${yyyy}-${mm}-${dd} ${hh}:${min}`; // Returns format 'YYYY-MM-DD HH:mm'
-        };
-
-        const formattedFromDate = formatDateTime(today, true);
-
-        const nextDay = new Date(today);
-        nextDay.setDate(today.getDate()); // Move to the next day
-        nextDay.setHours(23, 59); // Set the time to 23:59 (11:59 PM)
-        const formattedToDate = formatDateTime(nextDay);
-
+        };    
+        // Set fromDate to today at 6:00 AM
+        const fromDate = new Date(today);
+        fromDate.setHours(6, 0); // Set time to 6:00 AM    
+        // Set toDate to the next day at 5:00 AM
+        const toDate = new Date(today);
+        toDate.setDate(today.getDate() + 1); // Move to the next day
+        toDate.setHours(5, 59); // Set time to 5:00 AM    
+        // Format dates
+        const formattedFromDate = formatDateTime(fromDate);
+        const formattedToDate = formatDateTime(toDate);    
         setFromDate(formattedFromDate);
         setToDate(formattedToDate);
     }, []);
+
+    
+
 
 
     const subTotal = getOrderReport && getOrderReport?.length > 0
@@ -105,10 +99,6 @@ function OrderReports(props) {
     const numberOfItems = getOrderReport && getOrderReport?.length > 0
         ? getOrderReport.reduce((total, item) => total + (parseInt(item.orderItem) || 0), 0)
         : 0;
-    // setTimeout(() => {
-    //     getOrderHandler()
-    // }, 1000);
-
     const getOrderHandler = async () => {
         setLoading(true);
         setNetworkError("");
@@ -123,8 +113,6 @@ function OrderReports(props) {
             setLoading(false);
             return false;
         }
-
-
         try {
             const body = { fromDate, toDate };
             const response = await fetch("/order/get_order_by_date", "post", body);
@@ -151,12 +139,8 @@ function OrderReports(props) {
             setDateError("");
             setToError("");
             getOrderHandler();
-
         }
-
     }, [fromDate, toDate]);
-
-
     const exportToExcelBillSummery = () => {
         const worksheet = XLSX.utils.json_to_sheet(getOrderReport); // Convert JSON to worksheet
         const workbook = XLSX.utils.book_new(); // Create a new workbook
@@ -165,8 +149,6 @@ function OrderReports(props) {
         // Create and download Excel file
         XLSX.writeFile(workbook, "Bill_Order_Report.xlsx");
     };
-
-
     const exportToExcelCashSummery = () => {
         const worksheet = XLSX.utils.json_to_sheet(getReportsByCash); // Convert JSON to worksheet
         const workbook = XLSX.utils.book_new(); // Create a new workbook
@@ -175,8 +157,6 @@ function OrderReports(props) {
         // Create and download Excel file
         XLSX.writeFile(workbook, "Cash_Order_Report.xlsx");
     };
-
-
     const exportToExcelUPISummery = () => {
         const worksheet = XLSX.utils.json_to_sheet(getReportsByUpi); // Convert JSON to worksheet
         const workbook = XLSX.utils.book_new(); // Create a new workbook
@@ -185,10 +165,6 @@ function OrderReports(props) {
         // Create and download Excel file
         XLSX.writeFile(workbook, "UPI_Order_Report.xlsx");
     };
-
-
-
-
     // ================================================================
     const groupedData = useMemo(() => {
         const result = {};
@@ -204,10 +180,8 @@ function OrderReports(props) {
                 result[payMode].amount += amount;
             }
         });
-
         return result;
     }, [getOrderReport]);
-
     // Calculate the subtotal (total amount)
     const totalAmount = Object?.values(groupedData)?.reduce((sum, item) => sum + item.amount, 0);
     // ===================================================================================================================
@@ -220,10 +194,7 @@ function OrderReports(props) {
         acc[productId].totalAmount += parseFloat(totalAmount);
         return acc;
     }, {});
-
     const groupedProductwise = Object.values(groupedProduct);
-
-
     const numberOfItemsProduct = groupedProductwise && groupedProductwise?.length > 0
         ? groupedProductwise?.reduce((total, item) => total + (parseInt(item.quantity) || 0), 0)
         : 0;
@@ -231,7 +202,6 @@ function OrderReports(props) {
         const worksheet = XLSX.utils.json_to_sheet(groupedProductwise); // Convert JSON to worksheet
         const workbook = XLSX.utils.book_new(); // Create a new workbook
         XLSX.utils.book_append_sheet(workbook, worksheet, "Orders"); // Append the worksheet to the workbook
-
         // Create and download Excel file
         XLSX.writeFile(workbook, "Product_Order_Report.xlsx");
     };
@@ -248,7 +218,6 @@ function OrderReports(props) {
                 totalQuantity: 0 // Initialize total quantity
             };
         }
-
         // Add product to the category
         acc[categroyId].products.push({
             productId,
@@ -256,13 +225,10 @@ function OrderReports(props) {
             quantity: parseInt(quantity),
             totalAmount: parseFloat(totalAmount)
         });
-
         acc[categroyId].totalQuantity += parseInt(quantity) || 0;
         acc[categroyId].amount += parseFloat(totalAmount) || 0;
-
         return acc;
     }, {});
-
     // Convert the grouped object into an array
     const groupedCategorywise = Object?.values(groupedCategory);
 
@@ -272,13 +238,9 @@ function OrderReports(props) {
         totalQuantity: cat.totalQuantity,
         totalAmount: cat.amount // Ensuring totalAmount is formatted to two decimal places
     }));
-
-
-
     const numberOfItemsCategoryQty = numberOfItemsCategory && numberOfItemsCategory?.length > 0
         ? numberOfItemsCategory?.reduce((total, item) => total + (parseInt(item.totalQuantity) || 0), 0)
         : 0;
-
     const exportToExcelCategorySummery = () => {
         const worksheet = XLSX.utils.json_to_sheet(numberOfItemsCategory); // Convert JSON to worksheet
         const workbook = XLSX.utils.book_new(); // Create a new workbook
@@ -288,16 +250,9 @@ function OrderReports(props) {
         XLSX.writeFile(workbook, "Category_Order_Report.xlsx");
     };
     // ====================================================================================================
-
-
-
-
     const [key1, setKey1] = useState('all');
-
-
     return (
         <>
-
             <div className='container pt-2' >
                 <div className='row'>
                     <Col sm={4}></Col>
@@ -313,7 +268,6 @@ function OrderReports(props) {
                                     setToDate("")
                                 }
                             }}
-
                         />
                     </Col>
                     <Col sm={3}>
@@ -324,7 +278,6 @@ function OrderReports(props) {
                             value={toDate}
                             onChange={(e) => setToDate(e.target.value)}
                         />
-
                     </Col>
 
                     <Col sm={2}>
@@ -339,13 +292,13 @@ function OrderReports(props) {
                     <PropagateLoader color="#36d7b7" loading={true} size={15} />
                 </div>
             ) : networkError ? (
-                <div  className='text-center pt-5 mt-5 text-danger'>
+                <div className='text-center pt-5 mt-5 text-danger'>
                     <h5>{networkError}</h5>
                 </div>
             ) : (
                 <>
                     <div className='container'>
-                    <Tabs
+                        <Tabs
                             id="controlled-tab-example"
                             activeKey={key}
                             onSelect={(k) => setKey(k)}
@@ -360,7 +313,6 @@ function OrderReports(props) {
                                         onSelect={(k) => setKey1(k)}
                                         className=""
                                     >
-
                                         {/* All tab */}
                                         <Tab eventKey="all" title="All">
                                             <button className="btn btn-primary btn-sm " onClick={exportToExcelBillSummery} style={{
@@ -380,8 +332,6 @@ function OrderReports(props) {
                                                         <th className='bg-light' scope="col" style={{ textAlign: "left" }}>View</th>
                                                     </tr>
                                                 </thead>
-
-
                                                 <tbody>
                                                     {getOrderReport && getOrderReport?.length > 0 && getOrderReport.map((ord, indx) => (
                                                         <tr key={indx}>
@@ -400,7 +350,7 @@ function OrderReports(props) {
                                                     ))}
                                                     <tr>
                                                         <td scope="row" className='bg-light'></td>
-                                                        <td  className='bg-light'></td>
+                                                        <td className='bg-light'></td>
                                                         <td className='bg-light' style={{ textAlign: "right" }}><strong>Qty: {numberOfItems?.toLocaleString()}</strong></td>
                                                         <td className='bg-light' style={{ textAlign: "right" }}><strong>Total: {subTotal?.toLocaleString()}</strong></td>
                                                         <td className='bg-light'></td>
@@ -443,8 +393,6 @@ function OrderReports(props) {
                                                 float: "right",
                                                 marginTop: "-36px"
                                             }}>Export to Excel</button>
-
-
                                             <table className="table  p-3 table-hover">
                                                 <thead>
                                                     <tr>
@@ -510,15 +458,11 @@ function OrderReports(props) {
                                             )}
 
                                         </Tab>
-
-
                                         <Tab eventKey="upi" title="UPI" >
                                             <button className="btn btn-primary btn-sm mb-3 " onClick={exportToExcelUPISummery} style={{
                                                 float: "right",
                                                 marginTop: "-36px"
                                             }}>Export to Excel </button>
-
-
                                             <table className="table  p-3 table-hover">
                                                 <thead>
                                                     <tr>
@@ -558,9 +502,6 @@ function OrderReports(props) {
                                                     </tr>
                                                 </tbody>
                                             </table>
-
-
-
                                             {dateError && (
                                                 <div style={{ display: "flex", marginLeft: "0.5px", justifyContent: "center" }}>
                                                     <ExclamationTriangleIcon
@@ -585,46 +526,14 @@ function OrderReports(props) {
                                                     </p>
                                                 </div>
                                             )}
-
-
-                                            
                                         </Tab>
                                     </Tabs>
-
-
-
-
-
-                                    {/* <div className='row pt-3'>
-                                        <Col sm={6}></Col>
-                                        <Col sm={6}>
-                                            <Row  >
-                                                <Col sm={1}>
-                                                    <button className="btn btn-primary btn-sm mb-3 ">ALL</button>
-                                                </Col>
-                                                <Col sm={1}>
-                                                    <button className="btn btn-primary btn-sm mb-3 ">Cash</button>
-                                                </Col>
-                                                <Col sm={1}>
-                                                    <button className="btn btn-primary btn-sm mb-3 ">UPI</button>
-                                                </Col>
-                                            </Row>
-                                        </Col>
-                                    </div> */}
-
-
                                 </div>
                             </Tab>
-
-
-
-
-
 
                             <Tab eventKey="Punched" title="Bill Punched" >
                                 <Row>
                                     <Col>
-
                                         <table className="table  table-hover">
                                             <thead>
                                                 <tr>
@@ -639,7 +548,7 @@ function OrderReports(props) {
                                                     <tr key={index}>
                                                         <td scope="row">{index + 1}.</td>
                                                         <td style={{ textAlign: "right" }}>{(groupedData[payMode].count)?.toLocaleString()}</td>
-                                                        
+
                                                         <td style={{ textAlign: "center" }}> {payMode}</td>
                                                         <td style={{ textAlign: "right" }}>{(groupedData[payMode].amount)?.toLocaleString()}</td>
                                                     </tr>
@@ -647,9 +556,9 @@ function OrderReports(props) {
                                                 <tr>
                                                     <td className='bg-light'></td>
                                                     <td className='bg-light text-end' colSpan={1}><strong>Qty:   {
-                    Object.keys(groupedData)
-                        .reduce((total, payMode) => total + (groupedData[payMode].count || 0), 0)?.toLocaleString()
-                }</strong></td>
+                                                        Object.keys(groupedData)
+                                                            .reduce((total, payMode) => total + (groupedData[payMode].count || 0), 0)?.toLocaleString()
+                                                    }</strong></td>
                                                     <td className='bg-light text-end' colSpan={3} ><strong>Total: {totalAmount?.toLocaleString()}</strong></td>
 
                                                 </tr>
@@ -659,7 +568,6 @@ function OrderReports(props) {
                                     <Col></Col>
                                 </Row>
                             </Tab>
-
                             <Tab eventKey="Product" title="Product Summary">
                                 <Row>
                                     <Col>
@@ -696,7 +604,6 @@ function OrderReports(props) {
                                     <Col></Col>
                                 </Row>
                             </Tab>
-
                             <Tab eventKey="Category" title="Category Summary" >
                                 <Row>
                                     <Col>
@@ -733,13 +640,10 @@ function OrderReports(props) {
                                     <Col></Col>
                                 </Row>
                             </Tab>
-
                         </Tabs>
                     </div>
-
                 </>
             )}
-
             <ProductDetailModal
                 getProduct={getProduct}
                 productDetailOpen={productDetailOpen}
@@ -748,7 +652,6 @@ function OrderReports(props) {
                 setRefresh={setRefresh}
 
             />
-
             <DeleteOrderModal
                 orderDeleteOpen={orderDeleteOpen}
                 setOrderDeleteOpen={setOrderDeleteOpen}
